@@ -25,6 +25,96 @@ void printGrid(char grid[GRID_SIZE][GRID_SIZE]) {
 // Function to check if a ship can be placed at a given position
 int canPlaceShip(char grid[GRID_SIZE][GRID_SIZE], int x, int y, int size, char orientation) {
     if (orientation != 'h' && orientation != 'v') {
+        system("cls");
+        printf(">>> Invalid input. Try again.\n\n");
+        printGrid(grid);
+        return 0; // Invalid orientation
+    }
+    if (orientation == 'h') {
+        if (y + size > GRID_SIZE) {
+            system("cls");
+            printf(">>> Invalid input. Try again.\n\n");
+            printGrid(grid);
+            return 0; // Ship exceeds grid boundaries
+        }
+        for (int i = y; i < y + size; i++) {
+            if (grid[x][i] != '-') {
+                system("cls");
+                printf(">>> Invalid input. Try again.\n\n");
+                printGrid(grid);
+                return 0; // Collision with another ship
+            }
+            if (x > 0 && grid[x - 1][i] != '-') {
+                system("cls");
+                printf(">>> Invalid input. Try again.\n\n");
+                printGrid(grid);
+                return 0; // Collision with another ship horizontally
+            }
+            if (x < GRID_SIZE - 1 && grid[x + 1][i] != '-') {
+                system("cls");
+                printf(">>> Invalid input. Try again.\n\n");
+                printGrid(grid);
+                return 0; // Collision with another ship horizontally
+            }
+            if (i > 0 && grid[x][i - 1] != '-') {
+                system("cls");
+                printf(">>> Invalid input. Try again.\n\n");
+                printGrid(grid);
+                return 0; // Collision with another ship vertically
+            }
+            if (i < GRID_SIZE - 1 && grid[x][i + 1] != '-') {
+                system("cls");
+                printf(">>> Invalid input. Try again.\n\n");
+                printGrid(grid);
+                return 0; // Collision with another ship vertically
+            }
+        }
+    } else if (orientation == 'v') {
+        if (x + size > GRID_SIZE) {
+            system("cls");
+            printf(">>> Invalid input. Try again.\n\n");
+            printGrid(grid);
+            return 0; // Ship exceeds grid boundaries
+        }
+        for (int i = x; i < x + size; i++) {
+            if (grid[i][y] != '-') {
+                system("cls");
+                printf(">>> Invalid input. Try again.\n\n");
+                printGrid(grid);
+                return 0; // Collision with another ship
+            }
+            if (y > 0 && grid[i][y - 1] != '-') {
+                system("cls");
+                printf(">>> Invalid input. Try again.\n\n");
+                printGrid(grid);
+                return 0; // Collision with another ship horizontally
+            }
+            if (y < GRID_SIZE - 1 && grid[i][y + 1] != '-') {
+                system("cls");
+                printf(">>> Invalid input. Try again.\n\n");
+                printGrid(grid);
+                return 0; // Collision with another ship horizontally
+            }
+            if (i > 0 && grid[i - 1][y] != '-') {
+                system("cls");
+                printf(">>> Invalid input. Try again.\n\n");
+                printGrid(grid);
+                return 0; // Collision with another ship vertically
+            }
+            if (i < GRID_SIZE - 1 && grid[i + 1][y] != '-') {
+                system("cls");
+                printf(">>> Invalid input. Try again.\n\n");
+                printGrid(grid);
+                return 0; // Collision with another ship vertically
+            }
+        }
+    }
+    return 1; // Valid placement
+}
+
+// Function to check if a ship can be placed at a given position for computer
+int canPlaceShipc(char grid[GRID_SIZE][GRID_SIZE], int x, int y, int size, char orientation) {
+    if (orientation != 'h' && orientation != 'v') {
         return 0; // Invalid orientation
     }
     if (orientation == 'h') {
@@ -96,16 +186,24 @@ void placeComputerShips(char computerGrid[GRID_SIZE][GRID_SIZE]) {
         do {
             x = rand() % GRID_SIZE;
             y = rand() % GRID_SIZE;
-        } while (!canPlaceShip(computerGrid, x, y, size, orientation));
+        } while (!canPlaceShipc(computerGrid, x, y, size, orientation));
         placeShip(computerGrid, x, y, size, orientation);
     }
 }
 
 // Function to get the player's move
-void getPlayerMove(int *x, int *y) {
+void getPlayerMove(int *x, int *y, char mainGrid[GRID_SIZE][GRID_SIZE], int pscore, int cscore) {
     printf("\n>>> Enter your move (x y): ");
-    scanf("%d %d", y, x);
-    getchar();
+    int validInput = scanf("%d %d", y, x);
+    while (getchar() != '\n'); // Clear input buffer
+
+    if (validInput != 2) {
+        system("cls");
+        printf(">>> Invalid input. Try again.\n\n");
+        printGrid(mainGrid);
+        printf("\n>>> Player score: %d\n>>> Computer score: %d\n", pscore, cscore);
+        getPlayerMove(x, y, mainGrid, pscore, cscore); // Prompt for input again
+    }
 }
 
 // Function to check if a move is valid
@@ -136,6 +234,9 @@ void playGame() {
     char playerGrid[GRID_SIZE][GRID_SIZE];
     char computerGrid[GRID_SIZE][GRID_SIZE];
     char mainGrid [GRID_SIZE][GRID_SIZE];
+
+    int pscore = 15;
+    int cscore = 15;
 
     // Initialize the grids
     for (int i = 0; i < GRID_SIZE; i++) {
@@ -171,31 +272,13 @@ void playGame() {
 
     // Place the computer's ships
     system("cls");
-    printf(">>> Computer is placing its ships.\n");
+    printf(">   Computer is placing it's ships.\n");
     sleep(1);
     system("cls");
-    printf(" >> Computer is placing its ships.\n");
+    printf(">>  Computer is placing it's ships.\n");
     sleep(1);
     system("cls");
-    printf("> > Computer is placing its ships.\n");
-    sleep(1);
-    system("cls");
-    printf(">>  Computer is placing its ships.\n");
-    sleep(1);
-    system("cls");
-    printf(">>> Computer is placing its ships.\n");
-    sleep(1);
-    system("cls");
-    printf(" >> Computer is placing its ships.\n");
-    sleep(1);
-    system("cls");
-    printf("> > Computer is placing its ships.\n");
-    sleep(1);
-    system("cls");
-    printf(">>  Computer is placing its ships.\n");
-    sleep(1);
-    system("cls");
-    printf(">>> Computer is placing its ships.\n");
+    printf(">>> Computer is placing it's ships.\n");
     sleep(1);
     placeComputerShips(computerGrid);
     system("cls");
@@ -205,79 +288,67 @@ void playGame() {
     while (1) {
         if (playerTurn) {
             // Player's turn
-            printf(">>> Player's turn:\n\n");
+            printf(">>> Your turn:\n\n");
             printGrid(mainGrid);
+            printf("\n>>> Player score: %d\n>>> Computer score: %d\n", pscore, cscore);
             int x, y;
             do {
-                getPlayerMove(&x, &y);
+                getPlayerMove(&x, &y, mainGrid, pscore, cscore);
                 if (!isValidMove(computerGrid, x, y)) {
                     system("cls");
                     printf(">>> Invalid move. Try again.\n\n");
                     printGrid(mainGrid);
+                    printf("\n>>> Player score: %d\n>>> Computer score: %d\n", pscore, cscore);
                 }
             } while (!isValidMove(computerGrid, x, y));
             if (computerGrid[x][y] == 'S') {
                 system("cls");
-                printf(">>> Acknowledged!\n");
-                sleep(1);
-                system("cls");
-                printf(">>> The flight of a projectile.\n");
-                sleep(1);
-                system("cls");
-                printf(" >> The flight of a projectile.\n");
-                sleep(1);
-                system("cls");
-                printf("> > The flight of a projectile.\n");
+                printf(">   Acknowledged!\n");
                 sleep(1);
                 system("cls");
                 printf(">>  The flight of a projectile.\n");
                 sleep(1);
                 system("cls");
-                printf(">>> The flight of a projectile.\n");
-                sleep(1);
-                system("cls");
+                system("COLOR 02");
                 printf(">>> Hit!\n");
+                cscore--;
                 sleep(1);
                 system("cls");
+                system("COLOR 03");
                 computerGrid[x][y] = 'X';
                 mainGrid[x][y] = 'X';
                 playerTurn = 1; // Player hits again
             } else {
                 system("cls");
-                printf(">>> Acknowledged!\n");
-                sleep(1);
-                system("cls");
-                printf(">>> The flight of a projectile.\n");
-                sleep(1);
-                system("cls");
-                printf(" >> The flight of a projectile.\n");
-                sleep(1);
-                system("cls");
-                printf("> > The flight of a projectile.\n");
+                printf(">   Acknowledged!\n");
                 sleep(1);
                 system("cls");
                 printf(">>  The flight of a projectile.\n");
                 sleep(1);
                 system("cls");
-                printf(">>> The flight of a projectile.\n");
-                sleep(1);
-                system("cls");
+                system("COLOR 06");
                 printf(">>> Miss!\n");
                 sleep(1);
                 system("cls");
+                system("COLOR 03");
                 computerGrid[x][y] = 'O';
                 mainGrid[x][y] = 'O';
                 playerTurn = 0; // Player's turn ends, computer's turn starts
             }
             if (isGameOver(computerGrid)) {
-                printf(">>> Player wins!\n");
-                sleep(1);
+                system("COLOR 02");
+                printf(">>> Victory!\n\n");
+                printGrid(playerGrid);
+                printf("\n\n>>> Press any key to continue.");
+                getch();
                 system("cls");
+                system("COLOR 03");
                 break;
             }
         } else {
             // Computer's turn
-            printf(">>> Computer's turn\n");
+            system("COLOR 06");
+            printf(">>> Computer's turn!\n");
             sleep(1);
             system("cls");
             int computerX, computerY;
@@ -287,59 +358,45 @@ void playGame() {
             } while (!isValidMove(playerGrid, computerX, computerY));
             if (playerGrid[computerX][computerY] == 'S') {
                 system("cls");
-                printf(">>> A projectile is coming!\n");
-                sleep(1);
-                system("cls");
-                printf(">>> The flight of a projectile.\n");
-                sleep(1);
-                system("cls");
-                printf(" >> The flight of a projectile.\n");
-                sleep(1);
-                system("cls");
-                printf("> > The flight of a projectile.\n");
+                printf(">   A projectile is coming!\n");
                 sleep(1);
                 system("cls");
                 printf(">>  The flight of a projectile.\n");
                 sleep(1);
                 system("cls");
-                printf(">>> The flight of a projectile.\n");
-                sleep(1);
-                system("cls");
+                system("COLOR 04");
                 printf(">>> Hit!\n");
+                pscore--;
                 sleep(1);
                 system("cls");
+                system("COLOR 03");
                 playerGrid[computerX][computerY] = 'X';
                 playerTurn = 0; // Computer hits again
             } else {
                 system("cls");
-                printf(">>> A projectile is coming!\n");
-                sleep(1);
-                system("cls");
-                printf(">>> The flight of a projectile.\n");
-                sleep(1);
-                system("cls");
-                printf(" >> The flight of a projectile.\n");
-                sleep(1);
-                system("cls");
-                printf("> > The flight of a projectile.\n");
+                system("COLOR 06");
+                printf(">   A projectile is coming!\n");
                 sleep(1);
                 system("cls");
                 printf(">>  The flight of a projectile.\n");
                 sleep(1);
                 system("cls");
-                printf(">>> The flight of a projectile.\n");
-                sleep(1);
-                system("cls");
+                system("COLOR 03");
                 printf(">>> Miss!\n");
                 sleep(1);
                 system("cls");
+                system("COLOR 03");
                 playerGrid[computerX][computerY] = 'O';
                 playerTurn = 1; // Computer's turn ends, player's turn starts
             }
             if (isGameOver(playerGrid)) {
-                printf(">>> Computer wins!\n");
-                sleep(1);
+                system("COLOR 04");
+                printf(">>> Defeat!\n\n");
+                printGrid(playerGrid);
+                printf("\n\n>>> Press any key to continue.");
+                getch();
                 system("cls");
+                system("COLOR 03");
                 break;
             }
         }
@@ -351,6 +408,7 @@ void playGame() {
 int main() {
     int choice;
     do {
+        system("COLOR 03");
         printf("    < SEA BATTLE >\n");
         printf("----------------------\n");
         printf("  Main Menu:\n");
@@ -368,18 +426,6 @@ int main() {
                 playGame();
                 break;
             case 2:
-                system("cls");
-                printf(">>> Exiting the game.\n");
-                sleep(1);
-                system("cls");
-                printf(" >> Exiting the game.\n");
-                sleep(1);
-                system("cls");
-                printf("> > Exiting the game.\n");
-                sleep(1);
-                system("cls");
-                printf(">>  Exiting the game.\n");
-                sleep(1);
                 system("cls");
                 printf(">>> Exiting the game.\n");
                 sleep(1);
